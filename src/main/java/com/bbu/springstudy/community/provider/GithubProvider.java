@@ -32,7 +32,7 @@ public class GithubProvider {
         }
         return null;
     }
-
+    //解析回来的user
     public GithubUser getUser(String accessToken){
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
