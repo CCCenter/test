@@ -14,4 +14,6 @@ public interface UserMapper {
     @Select("select * from user where token = #{token}")
     User findByToken(@Param("token") String token); //类可以自动注入 不是类 需要加注解
 
+    @Select("select * from user where id = #{id}")
+    User findById(@Param("id") Integer id);
 }

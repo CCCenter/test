@@ -5,7 +5,9 @@
     <title>Title</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/community.css">
     <script src="js/bootstrap.min.js"></script>
+
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -46,5 +48,32 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-lg-12 col-sm-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现</h2>
+            <hr>
+            <div class="media" th:each="question:${questions}">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object img-rounded"
+                             th:src="${question.user.avatarUrl}">
+                        <!--th:src 标签使用@ 符号 -->
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading" th:text="${question.title}">quickly setup object</h4>
+                    <span th:text="${question.description}"></span><br>
+                    <span class="test-desc"><span th:text="${question.commentCount}"></span> 个回复 · <span th:text="${question.viewCount}"></span> 次浏览 · <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-3 col-lg-12 col-sm-12 col-xs-12">
+            <h3>热门话题</h3>
+        </div>
+    </div>
+
 </body>
 </html>

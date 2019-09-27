@@ -66,12 +66,4 @@ public class AuthorizeController {
             return "redirect:/"; //重定向
         }
     }
-
-    public UserMapper getUserMapper() {
-        return userMapper;
-    }
-
-    public void setUserMapper(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
 }
