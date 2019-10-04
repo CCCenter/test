@@ -1,17 +1,18 @@
 package com.bbu.springstudy.community.controller;
 
+import com.bbu.springstudy.community.dto.QuestionDTO;
 import com.bbu.springstudy.community.mapper.QuestionMapper;
-import com.bbu.springstudy.community.mapper.UserMapper;
 import com.bbu.springstudy.community.model.Question;
 import com.bbu.springstudy.community.model.User;
+import com.bbu.springstudy.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -19,14 +20,25 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class PublishController {
-    @Autowired
-    private QuestionMapper questionMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private QuestionService questionService;
 
     @GetMapping("/publish")
     public String publish() {
+        return "publish";
+    }
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id") Integer id,
+                        Model model) {
+        QuestionDTO question = questionService.getById(id);
+
+        model.addAttribute("title", question.getTitle());
+        model.addAttribute("description", question.getDescription());
+        model.addAttribute("tag", question.getTag());
+        model.addAttribute("id",question.getId());
+
         return "publish";
     }
 
@@ -35,6 +47,7 @@ public class PublishController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("tag") String tag,
+            @RequestParam("id") Integer id,
             HttpServletRequest request,
             //服务端传递到页面
             Model model
@@ -56,21 +69,7 @@ public class PublishController {
             model.addAttribute("error", "标签不能为空");
             return "publish";
         }
-
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    String token = cookie.getValue();
-                    user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+        User user = (User) request.getSession().getAttribute("user");
 
         if (user == null) {
             model.addAttribute("error", "用户未登录");
@@ -81,10 +80,9 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtModified());
+        question.setId(id);
 
-        questionMapper.create(question);
+        questionService.createOrUpdate(question);
         return "redirect:/";
     }
 }

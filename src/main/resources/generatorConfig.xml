@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--<classPathEntry location="/Program Files/IBM/SQLLIB/java/db2java.zip" />-->
+
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+        <!--jdbc 连接-->
+        <jdbcConnection driverClass="org.h2.Driver"
+                        connectionURL="jdbc:h2:~/community1"
+                        userId="sa"
+                        password="123">
+        </jdbcConnection>
+        <!-- 将 db 的 大类型 转化为 java 类型 -->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.bbu.springstudy.community.model" targetProject="src/main/java">
+            <!--k:enableSubPackages 设置为 true 时 没有targetPackage路径会创建路径-->
+            <property name="enableSubPackages" value="true" />
+            <!--sql 语句 是否去除 前后空格-->
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper"  targetProject="src/main/resources">
+            <!--k:enableSubPackages 设置为 true 时 没有targetPackage路径会创建路径-->
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.bbu.springstudy.community.mapper"  targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+        <!--tableName 表名 domainObjectName 生成文件的名称 schema模式 -->
+        <table tableName="user" domainObjectName="User" >
+            <!-- useActualColumnNames true：不转化为camel标识 默认 false-->
+            <!--<property name="useActualColumnNames" value="false"/>-->
+            <!--<generatedKey column="ID" sqlStatement="DB2" identity="true" />-->
+            <!--<columnOverride column="DATE_FIELD" property="startDate" />-->
+            <!--<ignoreColumn column="FRED" />-->
+            <!--<columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" />-->
+        </table>
+
+    </context>
+</generatorConfiguration>
