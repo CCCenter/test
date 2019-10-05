@@ -16,7 +16,7 @@ public class IndexController {
 
     @GetMapping("/")
     //什么都不输入默认返回index
-    public String index(                        Model model,
+    public String index(Model model,
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
                         @RequestParam(name = "size", defaultValue = "5") Integer size
     ) {

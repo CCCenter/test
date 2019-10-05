@@ -2,7 +2,6 @@ package com.bbu.springstudy.community.controller;
 
 import com.bbu.springstudy.community.dto.AccessTokenDTO;
 import com.bbu.springstudy.community.dto.GithubUser;
-import com.bbu.springstudy.community.mapper.UserMapper;
 import com.bbu.springstudy.community.model.User;
 import com.bbu.springstudy.community.provider.GithubProvider;
 import com.bbu.springstudy.community.service.UserService;

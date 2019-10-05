@@ -1,7 +1,6 @@
 package com.bbu.springstudy.community.controller;
 
 import com.bbu.springstudy.community.dto.QuestionDTO;
-import com.bbu.springstudy.community.mapper.QuestionMapper;
 import com.bbu.springstudy.community.model.Question;
 import com.bbu.springstudy.community.model.User;
 import com.bbu.springstudy.community.service.QuestionService;
@@ -47,7 +46,7 @@ public class PublishController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("tag") String tag,
-            @RequestParam("id") Integer id,
+            @RequestParam("id") Long id,
             HttpServletRequest request,
             //服务端传递到页面
             Model model
