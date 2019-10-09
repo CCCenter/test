@@ -23,4 +23,11 @@
     VIEW_COUNT = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="incCommentCount" parameterType="com.bbu.springstudy.community.model.Question">
+    update QUESTION
+    set
+    COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
 </mapper>

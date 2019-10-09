@@ -32,7 +32,7 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+    public PaginationDTO list(Long userId, Integer page, Integer size) {
 
 
         PaginationDTO paginationDTO = new PaginationDTO();
@@ -104,8 +104,8 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
-        Question question = questionMapper.selectByPrimaryKey(Long.valueOf(id));
+    public QuestionDTO getById(Long id) {
+        Question question = questionMapper.selectByPrimaryKey(id);
         if (question == null){
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
@@ -122,6 +122,9 @@ public class QuestionService {
         if (question.getId() == null){
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtModified());
+            question.setCommentCount(0);
+            question.setViewCount(0);
+            question.setLikeCount(0);
             questionMapper.insert(question);
         }else{
             question.setGmtModified(System.currentTimeMillis());
@@ -135,7 +138,7 @@ public class QuestionService {
         }
     }
 
-    public void incView(Integer id) {
+    public void incView(Long id) {
         //高并发下 会出现读 脏数据
 //        Question question = questionMapper.selectByPrimaryKey((long) id);
 //        Question updateQuestion = new Question();
@@ -144,7 +147,7 @@ public class QuestionService {
 //        questionMapper.updateByPrimaryKeySelective(updateQuestion);
 
         Question question = new Question();
-        question.setId((long)id);
+        question.setId(id);
         question.setViewCount(1);
         questionExtMapper.incView(question);
     }
