@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-    <!--<classPathEntry location="/Program Files/IBM/SQLLIB/java/db2java.zip" />-->
+    <!--<classPathEntry location="E:/oracle11g/product/11.2.0/dbhome_1/jdbc/lib/ojdbc6.jar" />-->
 
     <context id="DB2Tables" targetRuntime="MyBatis3">
         <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
@@ -14,6 +14,11 @@
                         userId="sa"
                         password="123">
         </jdbcConnection>
+        <!--<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"-->
+                        <!--connectionURL="jdbc:oracle:thin:@localhost:1521:orcl"-->
+                        <!--userId="system"-->
+                        <!--password="123456">-->
+        <!--</jdbcConnection>-->
         <!-- 将 db 的 大类型 转化为 java 类型 -->
         <javaTypeResolver >
             <property name="forceBigDecimals" value="false" />
