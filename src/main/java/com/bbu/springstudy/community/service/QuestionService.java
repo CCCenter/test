@@ -74,7 +74,7 @@ public class QuestionService {
     }
     public PaginationDTO list(String search, Integer page, Integer size) {
         String targetSearch = "";
-        if(StringUtils.isBlank(search)){
+        if(StringUtils.isNotBlank(search)){
             String[] searchs = StringUtils.split(search, " ");
             //字符串拼接
             targetSearch  = Arrays.stream(searchs).collect(Collectors.joining("|"));
@@ -82,7 +82,10 @@ public class QuestionService {
 
 
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = questionExtMapper.countByExample(new QuestionQueryDTO());
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(targetSearch);
+
+        Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
         paginationDTO.setPagination(totalCount, page, size);
 
         if(page < 1){
@@ -94,9 +97,9 @@ public class QuestionService {
 
         Integer offset = size * (page - 1);
 
-        QuestionExample questionExample = new QuestionExample();
-        questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
+        questionQueryDTO.setSize(size);
+        questionQueryDTO.setPage(offset);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
 
         List<QuestionDTO> questionDTOList = new ArrayList<>();
 

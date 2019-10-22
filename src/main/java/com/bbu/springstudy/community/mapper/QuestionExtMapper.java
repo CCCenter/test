@@ -9,5 +9,7 @@ public interface QuestionExtMapper {
     int incView(Question record);
     int incCommentCount(Question record);
     List<Question> selectRelated(Question question);
-    Integer countByExample(QuestionQueryDTO questionQueryDTO);
+    Integer countBySearch(QuestionQueryDTO questionQueryDTO);
+
+    List<Question> selectBySearch(QuestionQueryDTO questionQueryDTO);
 }
