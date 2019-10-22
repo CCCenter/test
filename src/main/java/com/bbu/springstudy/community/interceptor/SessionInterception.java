@@ -1,8 +1,10 @@
 package com.bbu.springstudy.community.interceptor;
 
+import com.bbu.springstudy.community.mapper.NotificationMapper;
 import com.bbu.springstudy.community.mapper.UserMapper;
 import com.bbu.springstudy.community.model.User;
 import com.bbu.springstudy.community.model.UserExample;
+import com.bbu.springstudy.community.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,12 +20,14 @@ public class SessionInterception implements HandlerInterceptor {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private NotificationService notificationService;
 
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
+        if (cookies != null && cookies.length != 0) {
             for (Cookie cookie : cookies) {
                 if ("token".equals(cookie.getName())) {
                     String token = cookie.getValue();
@@ -33,12 +37,13 @@ public class SessionInterception implements HandlerInterceptor {
                     List<User> users = userMapper.selectByExample(userExample);
                     if (users.size() != 0) {
                         request.getSession().setAttribute("user", users.get(0));
+                        Long unreadCount = notificationService.unreadCount(users.get(0).getId());
+                        request.getSession().setAttribute("unreadCount", unreadCount);
                     }
-                    break;
+                break;
                 }
             }
         }
-
         return true;
     }
 

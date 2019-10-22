@@ -6,11 +6,14 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/editormd.preview.min.css">
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/moment.min.js"></script>
     <script src="/js/community.js"></script>
-
+    <script src="/js/editormd.min.js"></script>
+    <script src="/js/marked.min.js"></script>
+    <script src="/js/prettify.min.js"></script>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
@@ -27,11 +30,20 @@
                     |阅读数：<span th:text="${question.viewCount}"></span>
                 </span>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${question.description}"></div>
+                <!--内容-->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="question-view">
+                    <textarea style="display: none" th:text="${question.description}"></textarea>
+                    <script type="text/javascript">
+                        $(function () {
+                            editormd.markdownToHTML("question-view",{
+                            });
+                        });
+                    </script>
+                </div>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <span class="pull-left label label-info question-tag" th:each="tag : ${question.tag.split(',')}">
-                    <span class="glyphicon glyphicon-tags"></span>
-                    <span class="label label-info" th:text="${tag}"></span>
+                <span th:each="tag : ${question.tag.split(',')}">
+                    <span class="pull-left label label-info glyphicon glyphicon-tag question-tag" th:text="${' ' + tag}"></span>
+                    <!--<span class="label label-info ></span>-->
                 </span>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <!-- 编辑 点赞 评论-->
@@ -83,18 +95,18 @@
             </div>
 
             <!-- 评论输入框-->
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section" th:if="${session.user != null}">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
                 <h3>回复</h3>
                 <div class="media">
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-rounded"
-                                 th:src="${session.user.avatarUrl}">
+                                 th:src="${session.user == null ? '/images/default-avatar.jpg' : session.user.avatarUrl}">
                         </a>
                     </div>
                     <div class="media-body">
                         <h4 class="media-heading">
-                            <span th:text="${session.user.getName()}"></span>
+                            <span th:text="${session.user == null ? '未登录' : session.user.getName()}"></span>
                         </h4>
                     </div>
                 </div>
@@ -126,7 +138,7 @@
             <!---->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4>站长推荐</h4>
-                <img src="/img/ad.jpg" class="img-thumbnail question-ad">
+                <img src="/images/ad.jpg" class="img-thumbnail question-ad">
             </div>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <!--相关问题-->

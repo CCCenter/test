@@ -2,6 +2,7 @@ package com.bbu.springstudy.community.service;
 
 import com.bbu.springstudy.community.dto.PaginationDTO;
 import com.bbu.springstudy.community.dto.QuestionDTO;
+import com.bbu.springstudy.community.dto.QuestionQueryDTO;
 import com.bbu.springstudy.community.exception.CustomizeErrorCode;
 import com.bbu.springstudy.community.exception.CustomizeException;
 import com.bbu.springstudy.community.mapper.QuestionExtMapper;
@@ -10,13 +11,16 @@ import com.bbu.springstudy.community.mapper.UserMapper;
 import com.bbu.springstudy.community.model.Question;
 import com.bbu.springstudy.community.model.QuestionExample;
 import com.bbu.springstudy.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 组装作用
@@ -34,14 +38,11 @@ public class QuestionService {
 
     public PaginationDTO list(Long userId, Integer page, Integer size) {
 
-
         PaginationDTO paginationDTO = new PaginationDTO();
         QuestionExample questionExample = new QuestionExample();
 
         questionExample.createCriteria().andCreatorEqualTo(userId);
-
         Integer totalCount = Math.toIntExact(questionMapper.countByExample(questionExample));
-
         paginationDTO.setPagination(totalCount, page, size);
 
         if(page < 1){
@@ -66,16 +67,22 @@ public class QuestionService {
             questionDTOList.add(questionDTO);
         }
 
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
 
 
         return paginationDTO;
     }
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search, Integer page, Integer size) {
+        String targetSearch = "";
+        if(StringUtils.isBlank(search)){
+            String[] searchs = StringUtils.split(search, " ");
+            //字符串拼接
+            targetSearch  = Arrays.stream(searchs).collect(Collectors.joining("|"));
+        }
 
 
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = (int)questionMapper.countByExample(new QuestionExample());
+        Integer totalCount = questionExtMapper.countByExample(new QuestionQueryDTO());
         paginationDTO.setPagination(totalCount, page, size);
 
         if(page < 1){
@@ -100,8 +107,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        paginationDTO.setQuestions(questionDTOList);
-
+        paginationDTO.setData(questionDTOList);
 
         return paginationDTO;
     }
@@ -152,5 +158,25 @@ public class QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionExtMapper.incView(question);
+    }
+    public List<QuestionDTO> listByRelated(QuestionDTO queryDTO) {
+        if(StringUtils.isBlank(queryDTO.getTag())){
+            return new ArrayList<>();
+        }
+        String[] tags = StringUtils.split(queryDTO.getTag(), ",");
+        //字符串拼接
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+
+        Question question = new Question();
+        question.setId(queryDTO.getId());
+        question.setTag(regexpTag);
+
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        List<QuestionDTO> questionDTOS = questions.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }

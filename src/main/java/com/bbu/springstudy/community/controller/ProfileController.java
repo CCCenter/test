@@ -1,7 +1,9 @@
 package com.bbu.springstudy.community.controller;
 
 import com.bbu.springstudy.community.dto.PaginationDTO;
+import com.bbu.springstudy.community.mapper.NotificationMapper;
 import com.bbu.springstudy.community.model.User;
+import com.bbu.springstudy.community.service.NotificationService;
 import com.bbu.springstudy.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,9 @@ public class ProfileController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping("/profile/{action}")
     public String profile(@PathVariable(name = "action") String action,
                           HttpServletRequest request,
@@ -28,17 +33,23 @@ public class ProfileController {
         if(user == null){
             return "redirect:/";
         }
-
+        Long unreadCount = notificationService.unreadCount(user.getId());
+        model.addAttribute("unreadCount",unreadCount);
         if("questions".equals(action)){
+            PaginationDTO paginationDTO = questionService.list(user.getId(), page, size);
             model.addAttribute("section","questions");
             model.addAttribute("sectionName","我的提问");
-        }else if("replies".equals(action)) {
+            model.addAttribute("pagination", paginationDTO);
+
+        }
+        if("replies".equals(action)) {
+            PaginationDTO paginationDTO = notificationService.list(user.getId(), page, size);
             model.addAttribute("section","replies");
             model.addAttribute("sectionName","我的回复");
+            model.addAttribute("pagination", paginationDTO);
         }
 
-        PaginationDTO paginationDTO = questionService.list(user.getId(), page, size);
-        model.addAttribute("pagination", paginationDTO);
+
         return "profile";
     }
 }

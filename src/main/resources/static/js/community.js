@@ -64,8 +64,6 @@ function collapseComments(e) {
 
         }else{
             $.getJSON( "/comment/" + id, function(data) {
-                console.log(data);
-
                 $.each(data.data.reverse(), function(index, comment){
                     console.log(comment.content);
                     var comments = $("<div/>" , {
