@@ -5,6 +5,7 @@ import com.bbu.springstudy.community.dto.GithubUser;
 import com.bbu.springstudy.community.model.User;
 import com.bbu.springstudy.community.provider.GithubProvider;
 import com.bbu.springstudy.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
+@Slf4j
 public class AuthorizeController {
 
     @Autowired//
@@ -62,6 +64,8 @@ public class AuthorizeController {
 
         }else{
             //登陆失败 重新登陆
+//            {} 占位符 
+            log.error("callback get github error,{}", githubUser);
             return "redirect:/"; //重定向
         }
     }

@@ -38,13 +38,19 @@
       <if test="search != null">
         and TITLE regexp #{search}
       </if>
+      <if test="tag != null and tag != ''">
+        and tag regexp #{tag}
+      </if>
     </where>
   </select>
   <select id="selectBySearch" parameterType="com.bbu.springstudy.community.dto.QuestionQueryDTO" resultMap="BaseResultMap">
     select * from QUESTION
     <where>
-      <if test="search != null">
+      <if test="search != null and search = ''">
         and TITLE regexp #{search}
+      </if>
+      <if test="tag != null and tag != ''">
+        and tag regexp #{tag}
       </if>
     </where>
     order by gmt_create desc limit #{page},#{size}

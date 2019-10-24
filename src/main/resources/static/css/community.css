@@ -83,6 +83,12 @@ body{
     cursor: pointer;
     font-size: 12px;
 }
+.question-tag a{
+    color: #fff;
+}
+.question-tag a:hover{
+    text-decoration: none;
+}
 .label-info{
     white-space: normal;
     display: inline-block;

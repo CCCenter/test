@@ -2,6 +2,7 @@ package com.bbu.springstudy.community.controller;
 
 import com.bbu.springstudy.community.cache.TagCache;
 import com.bbu.springstudy.community.dto.QuestionDTO;
+import com.bbu.springstudy.community.mapper.QuestionMapper;
 import com.bbu.springstudy.community.model.Question;
 import com.bbu.springstudy.community.model.User;
 import com.bbu.springstudy.community.service.QuestionService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 /**
  *
@@ -25,6 +27,8 @@ public class PublishController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private QuestionMapper questionMapper;
     @GetMapping("/publish")
     public String publish(Model model) {
         model.addAttribute("tags", TagCache.get());
@@ -62,6 +66,17 @@ public class PublishController {
             //服务端传递到页面
             Model model
     ) {
+        Question dbQuestion = questionMapper.selectByPrimaryKey(id);
+        User user = (User) request.getSession().getAttribute("user");
+
+        if (user == null) {
+            model.addAttribute("error", "用户未登录");
+            return "publish";
+        }
+
+        if(!Objects.equals(dbQuestion.getCreator(), user.getId())){
+            return "redirect:/";
+        }
 
         model.addAttribute("title", title);
         model.addAttribute("description", description);
@@ -83,12 +98,6 @@ public class PublishController {
         String invalid = TagCache.filterInvalid(tag);
         if(StringUtils.isNotBlank(invalid)){
             model.addAttribute("error", "输入非法标签"+ invalid);
-            return "publish";
-        }
-        User user = (User) request.getSession().getAttribute("user");
-
-        if (user == null) {
-            model.addAttribute("error", "用户未登录");
             return "publish";
         }
         Question question = new Question();

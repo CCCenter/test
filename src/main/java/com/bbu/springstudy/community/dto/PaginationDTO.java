@@ -58,10 +58,10 @@ public class PaginationDTO<T> {
             showNext = true;
         }
     //是否展示 回到首页
-        if(pages.contains(1)){
-            showFirstPage = false;
-        }else{
+        if(!pages.contains(1) && totalPage > 0){
             showFirstPage = true;
+        }else{
+            showFirstPage = false;
         }
         //是否展示 去尾页
         if(pages.contains(totalPage)){
